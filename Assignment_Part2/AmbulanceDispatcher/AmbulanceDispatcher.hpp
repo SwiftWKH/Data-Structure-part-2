@@ -5,26 +5,39 @@ struct Ambulance {
     int id;
     char driverName[50];
     char status[20];
+    int totalShifts;
+    bool isActive;
+};
+
+struct TimeSlot {
+    char shiftName[20];
+    char timeRange[20];
+    int assignedAmbulanceId;
 };
 
 class AmbulanceCircularQueue {
 private:
-    Ambulance* queue;
-    int front, rear, capacity, count;
+    Ambulance* ambulances;
+    TimeSlot* schedule;
+    int ambulanceCount, maxAmbulances;
+    int currentSlot, totalSlots;
     int nextId;
     bool loading;
     
 public:
-    AmbulanceCircularQueue(int size = 10);
+    AmbulanceCircularQueue(int maxAmb = 10);
     ~AmbulanceCircularQueue();
-    bool enqueue(const Ambulance& amb);
-    bool rotate();
-    void display();
+    bool registerAmbulance(const Ambulance& amb);
+    bool rotateShift();
+    void displaySchedule();
     bool isEmpty();
     bool isFull();
     void saveToFile();
     void loadFromFile();
     int getNextId();
+    int findLeastWorkedAmbulance();
+    void initializeSchedule();
+    void assignInitialSchedule();
 };
 
 void ambulanceDispatcherMenu();

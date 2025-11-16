@@ -1,5 +1,8 @@
-ID,DriverName,Status
-101,John Smith,Active
-102,Sarah Johnson,Active
-103,Mike Brown,Active
-104,Walter White,Active
+ID,DriverName,Status,TotalShifts,IsActive
+101,John Smith,Active,3,YES
+102,Sarah Johnson,Active,2,YES
+103,Mike Brown,Active,1,YES
+104,Walter White,Active,0,YES
+105,Jesse Pinkman,Active,0,YES
+106,Hank Schrader,Active,0,YES
+

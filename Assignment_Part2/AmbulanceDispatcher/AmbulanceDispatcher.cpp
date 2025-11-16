@@ -8,7 +8,7 @@ AmbulanceCircularQueue ambulanceQueue;
 
 AmbulanceCircularQueue::AmbulanceCircularQueue(int maxAmb) {
     maxAmbulances = maxAmb;
-    totalSlots = 9; // 3 days × 3 shifts = 9 slots
+    totalSlots = 9; // 3 days × 3 shifts
     
     ambulances = new Ambulance[maxAmbulances];
     schedule = new TimeSlot[totalSlots];
@@ -23,8 +23,6 @@ AmbulanceCircularQueue::AmbulanceCircularQueue(int maxAmb) {
         ambulances[i].id = 0;
         strcpy(ambulances[i].driverName, "");
         strcpy(ambulances[i].status, "");
-        ambulances[i].totalShifts = 0;
-        ambulances[i].isActive = false;
     }
     
     initializeSchedule();
@@ -61,18 +59,7 @@ bool AmbulanceCircularQueue::registerAmbulance(const Ambulance& amb) {
     if (ambulanceCount >= maxAmbulances) return false;
     
     ambulances[ambulanceCount] = amb;
-    ambulances[ambulanceCount].isActive = (ambulanceCount < 3); // First 3 are active
     ambulanceCount++;
-    
-    // Assign to schedule if active
-    if (amb.isActive && ambulanceCount <= totalSlots) {
-        for (int i = 0; i < totalSlots; i++) {
-            if (schedule[i].assignedAmbulanceId == 0) {
-                schedule[i].assignedAmbulanceId = amb.id;
-                break;
-            }
-        }
-    }
     
     if (!loading) saveToFile();
     return true;
@@ -80,9 +67,6 @@ bool AmbulanceCircularQueue::registerAmbulance(const Ambulance& amb) {
 
 bool AmbulanceCircularQueue::rotateShift() {
     if (ambulanceCount == 0) return false;
-    
-    // Move to next time slot (for display purposes)
-    currentSlot = (currentSlot + 1) % totalSlots;
     
     // Conveyor belt rotation - move the entire "window" of 3 people
     static int conveyorPosition = 0;
@@ -109,21 +93,6 @@ void AmbulanceCircularQueue::assignInitialSchedule() {
     }
 }
 
-int AmbulanceCircularQueue::findLeastWorkedAmbulance() {
-    if (ambulanceCount == 0) return 0;
-    
-    int minShifts = ambulances[0].totalShifts;
-    int selectedId = ambulances[0].id;
-    
-    for (int i = 1; i < ambulanceCount; i++) {
-        if (ambulances[i].totalShifts < minShifts) {
-            minShifts = ambulances[i].totalShifts;
-            selectedId = ambulances[i].id;
-        }
-    }
-    
-    return selectedId;
-}
 
 void AmbulanceCircularQueue::displaySchedule() {
     if (ambulanceCount == 0) {
@@ -132,17 +101,6 @@ void AmbulanceCircularQueue::displaySchedule() {
     }
     
     cout << "\n=== Ambulance Dispatch Schedule ===" << endl;
-    cout << "Current Shift: " << schedule[currentSlot].shiftName 
-         << " (" << schedule[currentSlot].timeRange << ")";
-    
-    // Find current ambulance name
-    for (int i = 0; i < ambulanceCount; i++) {
-        if (ambulances[i].id == schedule[currentSlot].assignedAmbulanceId) {
-            cout << " - AMB" << ambulances[i].id << " (" << ambulances[i].driverName << ")";
-            break;
-        }
-    }
-    cout << "\n" << endl;
     
     cout << "Weekly Schedule:" << endl;
     cout << "Day\t\tMorning\t\tEvening\t\tNight" << endl;
@@ -161,7 +119,6 @@ void AmbulanceCircularQueue::displaySchedule() {
         } else {
             cout << "Unassigned";
         }
-        if (shift == currentSlot) cout << "*";
         cout << "\t\t";
     }
     cout << endl;
@@ -179,7 +136,6 @@ void AmbulanceCircularQueue::displaySchedule() {
         } else {
             cout << "Unassigned";
         }
-        if (shift == currentSlot) cout << "*";
         cout << "\t\t";
     }
     cout << endl;
@@ -197,11 +153,9 @@ void AmbulanceCircularQueue::displaySchedule() {
         } else {
             cout << "Unassigned";
         }
-        if (shift == currentSlot) cout << "*";
         cout << "\t\t";
     }
     cout << endl;
-    cout << "\n* = Current Shift" << endl;
     
     cout << "\nWork Load Tracker:" << endl;
     cout << "----------------------------------------" << endl;
@@ -216,17 +170,15 @@ void AmbulanceCircularQueue::displaySchedule() {
         
         cout << "AMB" << ambulances[i].id << " (" << ambulances[i].driverName << "): ";
         
-        // Visual bar for current shifts
-        for (int j = 0; j < currentShifts && j < 10; j++) {
+        // Visual bar for current shifts (max 5 characters)
+        for (int j = 0; j < currentShifts && j < 5; j++) {
             cout << "#";
         }
-        for (int j = currentShifts; j < 10; j++) {
+        for (int j = currentShifts; j < 5; j++) {
             cout << "-";
         }
         
-        cout << " " << currentShifts << " shifts";
-        if (currentShifts == 0) cout << " (standby)";
-        cout << endl;
+        cout << " " << currentShifts << " shifts" << endl;
     }
 }
 
@@ -242,13 +194,11 @@ void AmbulanceCircularQueue::saveToFile() {
     ofstream file("AmbulanceDispatcher/ambulances.csv");
     if (!file.is_open()) return;
     
-    file << "ID,DriverName,Status,TotalShifts,IsActive" << endl;
+    file << "ID,DriverName,Status" << endl;
     for (int i = 0; i < ambulanceCount; i++) {
         file << ambulances[i].id << "," 
              << ambulances[i].driverName << "," 
-             << ambulances[i].status << ","
-             << ambulances[i].totalShifts << ","
-             << (ambulances[i].isActive ? "YES" : "NO") << endl;
+             << ambulances[i].status << endl;
     }
     file.close();
 }
@@ -270,18 +220,14 @@ void AmbulanceCircularQueue::loadFromFile() {
     while (getline(file, line) && ambulanceCount < maxAmbulances) {
         size_t pos1 = line.find(',');
         size_t pos2 = line.find(',', pos1 + 1);
-        size_t pos3 = line.find(',', pos2 + 1);
-        size_t pos4 = line.find(',', pos3 + 1);
         
-        if (pos1 != string::npos && pos4 != string::npos) {
+        if (pos1 != string::npos && pos2 != string::npos) {
             Ambulance amb;
             amb.id = stoi(line.substr(0, pos1));
             if (amb.id > maxId) maxId = amb.id;
             
             strcpy(amb.driverName, line.substr(pos1 + 1, pos2 - pos1 - 1).c_str());
-            strcpy(amb.status, line.substr(pos2 + 1, pos3 - pos2 - 1).c_str());
-            amb.totalShifts = stoi(line.substr(pos3 + 1, pos4 - pos3 - 1));
-            amb.isActive = (line.substr(pos4 + 1) == "YES");
+            strcpy(amb.status, line.substr(pos2 + 1).c_str());
             
             ambulances[ambulanceCount++] = amb;
         }
@@ -321,8 +267,6 @@ void ambulanceDispatcherMenu() {
                 cin.ignore();
                 cin.getline(amb.driverName, 50);
                 strcpy(amb.status, "Active");
-                amb.totalShifts = 0;
-                amb.isActive = true;
                 
                 if (ambulanceQueue.registerAmbulance(amb)) {
                     cout << "Ambulance registered successfully! ID: " << amb.id << endl;

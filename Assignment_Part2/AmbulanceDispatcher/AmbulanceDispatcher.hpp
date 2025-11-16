@@ -5,8 +5,6 @@ struct Ambulance {
     int id;
     char driverName[50];
     char status[20];
-    int totalShifts;
-    bool isActive;
 };
 
 struct TimeSlot {
@@ -35,7 +33,6 @@ public:
     void saveToFile();
     void loadFromFile();
     int getNextId();
-    int findLeastWorkedAmbulance();
     void initializeSchedule();
     void assignInitialSchedule();
 };

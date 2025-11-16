@@ -1,0 +1,5 @@
+UserID,Password,Role,Name
+member1,pass1,Patient Admission Clerk,John Smith
+member2,pass2,Medical Supply Manager,Sarah Johnson
+member3,pass3,Emergency Department Officer,Dr. Michael Brown
+member4,pass4,Ambulance Dispatcher,Lisa Wilson

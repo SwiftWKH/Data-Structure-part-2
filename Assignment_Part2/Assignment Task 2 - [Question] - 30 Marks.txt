@@ -1,0 +1,142 @@
+Hospital Patient Care Management System Using Core Data Structures 
+(Working Duration: Monday of Week 10 to Monday of Week 14 - 30 Marks)
+
+
+OBJECTIVE:
+To develop a C++ system that simulates the management of patients, staff, medical supplies, and ambulance scheduling in a hospital during peak operations. The program must be implemented using Stacks, Queues, Priority Queues, and Circular Queues. Each team member will handle a unique role with assigned functionalities.
+SCENARIO BACKGROUND:
+A hospital faces increased patient flow during seasonal outbreaks. Efficient management of resources is critical: doctors must see patients in order, urgent cases need priority attention, medical supplies must be tracked, and ambulances must be scheduled in rotation. The system you build will support:
+* Managing patient queues
+* Coordinating staff shifts
+* Prioritizing emergency admissions
+* Scheduling ambulances for continuous service
+The program must be menu-driven, user-friendly, and written entirely in C++ using core language features (no third-party libraries for data structures).
+TEAM STRUCTURE:
+Each group will have the following features:
+* 4 students per group
+* Each member assumes a unique role
+* Each role implements 3 functionalities, applying a specific data structure
+* Code modules must be integrated using appropriate integration techniques
+CHALLENGES:
+
+The Hospital Patient Care Management System must efficiently handle:
+* Routine and emergency patient flows
+* Staff scheduling and deployment
+* Urgent emergency admissions
+* Continuous ambulance rotations
+
+
+
+
+SYSTEM TASKS & MEMBER ALLOCATION:
+
+You are not told which specific data structure to use. Part of your group task is to analyse the requirements and choose an appropriate data structure for each role.
+
+Each student in a team will take responsibility for one of the following roles, applying appropriate data structures to solve key challenges.
+
+Role 1: PATIENT ADMISSION CLERK
+Responsible for registering incoming patients.
+Functionalities:
+1. Admit Patient: Add a patient (ID, name, condition type).
+2. Discharge Patient: Remove the earliest admitted patient after treatment.
+3. View Patient Queue: Display all patients waiting for treatment.
+Role 2: MEDICAL SUPPLY MANAGER
+Handles the storage and usage of medical supplies.
+Functionalities:
+1. Add Supply Stock: Record new supply items (type, quantity, batch).
+2. Use 'Last Added' Supply: Remove the most recently added supply for usage.
+3. View Current Supplies: Show all supplies available.
+Role 3: EMERGENCY DEPARTMENT OFFICER
+Manages emergency admissions based on severity.
+Functionalities:
+1. Log Emergency Case: Add a case (patient name, type of emergency, priority level).
+2. Process Most Critical Case: Attend to the highest-priority emergency.
+3. View Pending Emergency Cases: Display all emergency cases in order of priority.
+Role 4: AMBULANCE DISPATCHER	
+Schedules hospital ambulances for continuous duty.
+Functionalities:
+1. Register Ambulance: Add an ambulance to the active-duty list.
+2. Rotate Ambulance Shift: Rotate the schedule so that each ambulance gets equal duty time.
+3. Display Ambulance Schedule: Show current ambulance rotation.
+
+
+Lab Work #2 - Program & Live Presentation Guidelines (30 Marks)
+
+Team & Submission Requirements
+1. Each team must have up to FOUR (4) members.
+
+2. Your team is required to use C++ to develop ONLY ONE (1) prototype in this section, without using STL containers like <list> or <vector>.
+
+3. Each team member must be responsible for AT LEAST ONE (1) of the following tasks, applying the appropriate data structures and algorithms.
+
+o Patient Admission Clerk
+o Medical Supply Manager
+o Emergency Department Officer
+o Ambulance Dispatcher
+
+Marks awarded will be based on individual contributions, considering each member's responsibility in the system and how accurately you can justify your selection of data structures and algorithms.
+4. The evaluation criteria for this lab work #2 also include assessing the clarity and structural design of the code, as well as the quality of comments and adherence to good programming practices. (e.g., indentation, meaningful identifier names, comments, etc.). 
+5. This task requires a group submission, but grading will be based on everyone's contribution to the system. 
+The team leader must upload a ZIP file of the system solution to the Moodle system by Monday of Week 14, no later than 5:00 pm.
+* Include only .cpp, .hpp, and csv/text files.
+* Follow this file naming format: <GroupNo>_<TeamLeaderID>_<1stMemberID>_<2ndMemberID>_<3rdMemberID>.zip
+* For example, "G1_TP012345_TP014556_TP067554_TP034325.zip"
+Refer to Page 5 for the marking criteria of this Lab Evaluation Work #2 submission.
+6. 
+
+Summary: What You Need to Submit?
+
+
+1. This assignment requires TWO (2) submissions by your team, which include the following:
+
+i. Group Submission (By Monday, Week 14, before 5:00 pm)
+* C++ solution in a ZIP folder, including the .cpp, .hpp, and csv/text files.
+
+ii. Individual Recording Demonstration (30 Marks)
+* Each member must present their task individually within 30 minutes, including both a system demonstration and a Q&A session.
+* PowerPoint slides are not required for this demonstration.
+* Failing to submit the recording demo = 0 marks for Lab Work #2.
+
+
+
+
+MARKING CRITERIA
+(Lab Evaluation Work #2 - 30 MARKS)
+
+This Lab Evaluation Work #2 will be assessed based on the following INDIVIDUAL performance criteria: 
+
+Assessment Components
+Inclusive30 Marks
+CLO3: Lab Evaluation Work #2 - Individual Development Skills
+Practical Skills: Problem-Solving Skills (15 Marks)
+* Identify and address technical challenges with minimum guidance
+Assessment of Problem-Solving Ability* Use of data structures and algorithms.
+Technical Proficiency* Implementation of features according to design specifications.
+Technical Proficiency* Code quality, including readability, efficiency, and correctness.
+Code Quality Evaluation* Quality of individual contributions relative to team goals.
+Contribution Assessment* Innovation and creativity in developing and implementing features.
+Creativity and Innovation EvaluationPractical Skills: Q&A with Justification of Data Structures (15 Marks)
+* Clear and logical explanation for the choice of data structures.
+Justification Ability* Relevance of chosen data structures to the functionality implemented.
+Relevance Evaluation* Justification aligned with the system requirements and performance needs.
+Alignment with Requirements* Effectiveness of the live presentation in explaining individual contributions
+Presentation Effectiveness
+
+
+
+CT077-3-2-DSTR 	Lab Evaluation Work #2	Page 3 of 7
+
+
+CT077-3-2-DSTR 	Lab Evaluation Work #2	Page 2 of 6
+
+Level 2	 Asia Pacific University of Technology and Innovation	 202504
+
+
+Level 2	 Asia Pacific University of Technology and Innovation	 202504
+
+CT077-3-2-DSTR 	Lab Evaluation Work #2	Page 1 of 7
+
+
+Level 2	 Asia Pacific University of Technology and Innovation	 202502
+
+

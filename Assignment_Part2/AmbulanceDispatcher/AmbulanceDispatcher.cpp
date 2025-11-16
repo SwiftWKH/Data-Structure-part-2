@@ -8,7 +8,7 @@ AmbulanceCircularQueue ambulanceQueue;
 
 AmbulanceCircularQueue::AmbulanceCircularQueue(int maxAmb) {
     maxAmbulances = maxAmb;
-    totalSlots = 9; // 3 days × 3 shifts
+    totalSlots = 15; // 5 days × 3 shifts = 15 slots
     
     ambulances = new Ambulance[maxAmbulances];
     schedule = new TimeSlot[totalSlots];
@@ -36,7 +36,7 @@ AmbulanceCircularQueue::~AmbulanceCircularQueue() {
 }
 
 void AmbulanceCircularQueue::initializeSchedule() {
-    const char* shifts[9][2] = {
+    const char* shifts[15][2] = {
         {"Mon Morning", "8AM-4PM"},
         {"Mon Evening", "4PM-12AM"},
         {"Mon Night", "12AM-8AM"},
@@ -45,7 +45,13 @@ void AmbulanceCircularQueue::initializeSchedule() {
         {"Tue Night", "12AM-8AM"},
         {"Wed Morning", "8AM-4PM"},
         {"Wed Evening", "4PM-12AM"},
-        {"Wed Night", "12AM-8AM"}
+        {"Wed Night", "12AM-8AM"},
+        {"Thu Morning", "8AM-4PM"},
+        {"Thu Evening", "4PM-12AM"},
+        {"Thu Night", "12AM-8AM"},
+        {"Fri Morning", "8AM-4PM"},
+        {"Fri Evening", "4PM-12AM"},
+        {"Fri Night", "12AM-8AM"}
     };
     
     for (int i = 0; i < totalSlots; i++) {
@@ -72,11 +78,14 @@ bool AmbulanceCircularQueue::rotateShift() {
     static int conveyorPosition = 0;
     conveyorPosition = (conveyorPosition + 1) % ambulanceCount;
     
-    // Fill the 9-slot schedule with groups of 3 from the conveyor
-    for (int slot = 0; slot < totalSlots; slot++) {
-        int groupPosition = slot % 3; // Which position in the group of 3
-        int ambulanceIndex = (conveyorPosition + groupPosition) % ambulanceCount;
-        schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
+    // Fill the 15-slot schedule with groups of 3, but shift their positions across days
+    for (int day = 0; day < 5; day++) {
+        for (int shift = 0; shift < 3; shift++) {
+            int slot = day * 3 + shift;
+            int shiftOffset = (shift + day) % 3; // Rotate shifts across days
+            int ambulanceIndex = (conveyorPosition + shiftOffset) % ambulanceCount;
+            schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
+        }
     }
     
     return true;
@@ -85,11 +94,14 @@ bool AmbulanceCircularQueue::rotateShift() {
 void AmbulanceCircularQueue::assignInitialSchedule() {
     if (ambulanceCount == 0) return;
     
-    // Initial conveyor position - show first 3 people
-    for (int slot = 0; slot < totalSlots; slot++) {
-        int groupPosition = slot % 3; // Which position in the group of 3
-        int ambulanceIndex = groupPosition % ambulanceCount;
-        schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
+    // Initial schedule with shift rotation across days
+    for (int day = 0; day < 5; day++) {
+        for (int shift = 0; shift < 3; shift++) {
+            int slot = day * 3 + shift;
+            int shiftOffset = (shift + day) % 3; // Rotate shifts across days
+            int ambulanceIndex = shiftOffset % ambulanceCount;
+            schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
+        }
     }
 }
 
@@ -143,6 +155,40 @@ void AmbulanceCircularQueue::displaySchedule() {
     // Wednesday (slots 6,7,8)
     cout << "Wednesday\t";
     for (int shift = 6; shift < 9; shift++) {
+        if (schedule[shift].assignedAmbulanceId > 0) {
+            for (int j = 0; j < ambulanceCount; j++) {
+                if (ambulances[j].id == schedule[shift].assignedAmbulanceId) {
+                    cout << "AMB" << ambulances[j].id;
+                    break;
+                }
+            }
+        } else {
+            cout << "Unassigned";
+        }
+        cout << "\t\t";
+    }
+    cout << endl;
+    
+    // Thursday (slots 9,10,11)
+    cout << "Thursday\t";
+    for (int shift = 9; shift < 12; shift++) {
+        if (schedule[shift].assignedAmbulanceId > 0) {
+            for (int j = 0; j < ambulanceCount; j++) {
+                if (ambulances[j].id == schedule[shift].assignedAmbulanceId) {
+                    cout << "AMB" << ambulances[j].id;
+                    break;
+                }
+            }
+        } else {
+            cout << "Unassigned";
+        }
+        cout << "\t\t";
+    }
+    cout << endl;
+    
+    // Friday (slots 12,13,14)
+    cout << "Friday\t\t";
+    for (int shift = 12; shift < 15; shift++) {
         if (schedule[shift].assignedAmbulanceId > 0) {
             for (int j = 0; j < ambulanceCount; j++) {
                 if (ambulances[j].id == schedule[shift].assignedAmbulanceId) {

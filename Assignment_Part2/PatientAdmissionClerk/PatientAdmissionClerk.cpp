@@ -21,7 +21,6 @@ PatientQueue::PatientQueue() {
 
 // Destructor
 PatientQueue::~PatientQueue() {
-    cout << "\n(PatientAdmissionClerk: Cleaning up queue...)" << endl;
     while (!isEmpty()) {
         QueueNode* temp = front;
         front = front->next;

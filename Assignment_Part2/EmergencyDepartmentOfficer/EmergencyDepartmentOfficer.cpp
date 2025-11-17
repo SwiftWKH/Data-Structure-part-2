@@ -235,14 +235,25 @@ int EmergencyPriorityQueue::getSize() {
 
 // Load emergency cases from CSV file
 void EmergencyPriorityQueue::loadFromFile(const string& filename) {
+    // Try to open the file with the provided filename first
     ifstream file(filename);
+    string actualFilename = filename;
+    
     if (!file.is_open()) {
-        // Try alternative path (in case program runs from different directory)
-        string altPath = "emergency_cases.csv";
+        // Try alternative path (in case the program runs from different directory)
+        string altPath = "EmergencyDepartmentOfficer/emergency_cases.csv";
         file.open(altPath);
-        if (!file.is_open()) {
-            // File doesn't exist yet, start with empty queue
-            return;
+        if (file.is_open()) {
+            actualFilename = altPath;
+        } else {
+            // Try just the filename
+            file.open("emergency_cases.csv");
+            if (file.is_open()) {
+                actualFilename = "emergency_cases.csv";
+            } else {
+                // File doesn't exist yet, start with empty queue
+                return;
+            }
         }
     }
     
@@ -270,7 +281,7 @@ void EmergencyPriorityQueue::loadFromFile(const string& filename) {
                 
                 // Validate priority
                 if (priority >= 1 && priority <= 5) {
-                    // Insert directly into heap (we'll heapify after loading all)
+                    // Insert directly into heap
                     heap[size].patientName = patientName;
                     heap[size].emergencyType = emergencyType;
                     heap[size].priority = priority;
@@ -297,10 +308,26 @@ void EmergencyPriorityQueue::loadFromFile(const string& filename) {
 
 // Save emergency cases to CSV file
 void EmergencyPriorityQueue::saveToFile(const string& filename) {
+    // Try to open with provided filename first
     ofstream file(filename);
+    string actualFilename = filename;
+    
     if (!file.is_open()) {
-        cout << "Warning: Could not save to file: " << filename << endl;
-        return;
+        // Try alternative path
+        string altPath = "EmergencyDepartmentOfficer/emergency_cases.csv";
+        file.open(altPath);
+        if (file.is_open()) {
+            actualFilename = altPath;
+        } else {
+            // Try just the filename
+            file.open("emergency_cases.csv");
+            if (file.is_open()) {
+                actualFilename = "emergency_cases.csv";
+            } else {
+                cout << "Error: Could not write to any file path. Tried: " << filename << " and alternatives." << endl;
+                return;
+            }
+        }
     }
     
     // Write header
@@ -356,6 +383,7 @@ void EmergencyPriorityQueue::saveToFile(const string& filename) {
     
     delete[] tempHeap;
     file.close();
+    cout << "Data saved to file: " << actualFilename << endl;
 }
 
 // Emergency Department Officer Menu
@@ -392,9 +420,9 @@ void emergencyDepartmentOfficerMenu() {
                 cin >> priority;
                 
                 if (emergencyQueue.logEmergencyCase(patientName, emergencyType, priority)) {
-                    cout << "\n✓ Emergency case logged successfully!" << endl;
+                    cout << "\n Emergency case logged successfully!" << endl;
                 } else {
-                    cout << "\n✗ Failed to log emergency case." << endl;
+                    cout << "\n Failed to log emergency case." << endl;
                 }
                 break;
             }
@@ -404,13 +432,13 @@ void emergencyDepartmentOfficerMenu() {
                 cout << "\n--- Process Most Critical Case ---" << endl;
                 
                 if (emergencyQueue.processMostCriticalCase(processedCase)) {
-                    cout << "\n✓ Processing most critical case:" << endl;
+                    cout << "\nProcessing most critical case:" << endl;
                     cout << "  Patient Name: " << processedCase.patientName << endl;
                     cout << "  Emergency Type: " << processedCase.emergencyType << endl;
                     cout << "  Priority Level: " << processedCase.priority << endl;
                     cout << "\nCase has been processed and removed from queue." << endl;
                 } else {
-                    cout << "\n✗ No emergency cases available to process." << endl;
+                    cout << "\n No emergency cases available to process." << endl;
                 }
                 break;
             }

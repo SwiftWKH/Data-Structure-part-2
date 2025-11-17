@@ -2,8 +2,6 @@
 #define MEDICALSUPPLYMANAGER_HPP
 
 #include <string>
-#include <iostream> 
-using namespace std;
 
 /**
  * @struct SupplyItem
@@ -11,9 +9,9 @@ using namespace std;
  * This is the data that will be stored in each stack node.
  */
 struct SupplyItem {
-    string type;      // e.g., "Syringes", "Bandages"
+    std::string type;      // e.g., "Syringes", "Bandages"
     int quantity;
-    string batch;     // e.g., "B-001"
+    std::string batch;     // e.g., "B-001"
 };
 
 /**
@@ -29,7 +27,7 @@ struct Node {
      * @brief Node constructor for easy initialization.
      * @param item The SupplyItem data to store in this node.
      */
-    Node(SupplyItem item) : data(item), next(nullptr) {}
+    Node(const SupplyItem& item) : data(item), next(nullptr) {}
 };
 
 /**
@@ -54,37 +52,53 @@ public:
 
     /**
      * @brief Destructor.
-     * Crucially, this cleans up all dynamically allocated memory (all Nodes)
+     * Cleans up all dynamically allocated memory (all Nodes)
      * to prevent any memory leaks when the stack object is destroyed.
      */
     ~SupplyStack();
 
     /**
+     * @brief Disable copy construction to avoid shallow-copy issues.
+     */
+    SupplyStack(const SupplyStack&) = delete;
+
+    /**
+     * @brief Disable copy assignment to avoid shallow-copy issues.
+     */
+    SupplyStack& operator=(const SupplyStack&) = delete;
+
+    /**
      * @brief Checks if the stack is empty.
      * @return true if 'top' is nullptr, false otherwise.
      */
-    bool isEmpty();
+    bool isEmpty() const;
 
     /**
      * @brief Adds a new supply item to the top of the stack (push operation).
      * @param type The type of supply (e.g., "Gauze").
      * @param quantity The number of items in this batch.
      * @param batch The batch identifier (e.g., "G-2025").
+     * @return true if the supply was added successfully, false for invalid input.
      */
-    void addSupply(string type, int quantity, string batch);
+    bool addSupply(const std::string& type, int quantity, const std::string& batch);
 
+    /**
+     * @brief Removes the last added (top) supply item from the stack (pop operation).
+     * @param out Reference to SupplyItem which will receive the popped item.
+     * @return true if an item was popped and stored in out, false if the stack was empty.
+     */
+    bool useLastSupply(SupplyItem& out);
 
-// Removes the last added (top) supply item from the stack (pop operation).
-// It also displays the item that was used.
-    void useLastSupply();
-
-
-// Displays all supply items currently in the stack, from top to bottom, without removing any of them.
-    void viewSupplies();
+    /**
+     * @brief Displays all supply items currently in the stack, from top to bottom,
+     * without removing any of them. This is a convenience UI helper.
+     */
+    void viewSupplies() const;
 };
 
-
-// Function declaration for the module's main menu, called by main.cpp
+/**
+ * @brief Function declaration for the module's main menu, called by main.cpp
+ */
 void medicalSupplyManagerMenu();
 
 #endif // MEDICALSUPPLYMANAGER_HPP

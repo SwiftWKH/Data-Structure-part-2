@@ -74,18 +74,14 @@ bool AmbulanceCircularQueue::registerAmbulance(const Ambulance& amb) {
 bool AmbulanceCircularQueue::rotateShift() {
     if (ambulanceCount == 0) return false;
     
-    // Conveyor belt rotation - move the entire "window" of 3 people
-    static int conveyorPosition = 0;
-    conveyorPosition = (conveyorPosition + 1) % ambulanceCount;
+    // shift everyone by 1 position
+    static int rotationOffset = 0;
+    rotationOffset = (rotationOffset + 1) % ambulanceCount;
     
-    // Fill the 15-slot schedule with groups of 3, but shift their positions across days
-    for (int day = 0; day < 5; day++) {
-        for (int shift = 0; shift < 3; shift++) {
-            int slot = day * 3 + shift;
-            int shiftOffset = (shift + day) % 3; // Rotate shifts across days
-            int ambulanceIndex = (conveyorPosition + shiftOffset) % ambulanceCount;
-            schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
-        }
+    // Redistribute ALL ambulances across ALL 15 slots
+    for (int slot = 0; slot < totalSlots; slot++) { //Example: Slot(0), rotationOffset = (0+1)%10=1, AssignedAmbulance = AMB102
+        int ambulanceIndex = (slot + rotationOffset) % ambulanceCount;
+        schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
     }
     
     return true;
@@ -94,14 +90,10 @@ bool AmbulanceCircularQueue::rotateShift() {
 void AmbulanceCircularQueue::assignInitialSchedule() {
     if (ambulanceCount == 0) return;
     
-    // Initial schedule with shift rotation across days
-    for (int day = 0; day < 5; day++) {
-        for (int shift = 0; shift < 3; shift++) {
-            int slot = day * 3 + shift;
-            int shiftOffset = (shift + day) % 3; // Rotate shifts across days
-            int ambulanceIndex = shiftOffset % ambulanceCount;
-            schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
-        }
+    // Distribute ALL ambulances across ALL 15 slots for maximum fairness
+    for (int slot = 0; slot < totalSlots; slot++) {
+        int ambulanceIndex = slot % ambulanceCount;  // Cycle through all ambulances
+        schedule[slot].assignedAmbulanceId = ambulances[ambulanceIndex].id;
     }
 }
 
@@ -216,7 +208,7 @@ void AmbulanceCircularQueue::displaySchedule() {
         
         cout << "AMB" << ambulances[i].id << " (" << ambulances[i].driverName << "): ";
         
-        // Visual bar for current shifts (max 5 characters)
+        // Visual bar for current shifts
         for (int j = 0; j < currentShifts && j < 5; j++) {
             cout << "#";
         }
@@ -304,6 +296,9 @@ void ambulanceDispatcherMenu() {
             case 1: {
                 if (ambulanceQueue.isFull()) {
                     cout << "Cannot register more ambulances - queue full!" << endl;
+                    cout << "Press Enter to continue...";
+                    cin.ignore();
+                    cin.get();
                     break;
                 }
                 

@@ -8,9 +8,7 @@ using namespace std;
 // Global Priority Queue instance for Emergency Department
 EmergencyPriorityQueue emergencyQueue(100);
 
-// ============================================================================
 // EmergencyPriorityQueue Implementation (Max-Heap using Array)
-// ============================================================================
 
 // Constructor: Initialize the priority queue with given capacity
 EmergencyPriorityQueue::EmergencyPriorityQueue(int maxCapacity) {
@@ -48,7 +46,7 @@ void EmergencyPriorityQueue::swap(int i, int j) {
 }
 
 // Heapify Up: Maintain min-heap property when inserting (bubble up)
-// Lower priority number = higher urgency, so we use min-heap
+// Lower priority number = higher urgency, so I use min-heap :)
 void EmergencyPriorityQueue::heapifyUp(int index) {
     while (index > 0 && heap[getParent(index)].priority > heap[index].priority) {
         swap(index, getParent(index));
@@ -57,7 +55,7 @@ void EmergencyPriorityQueue::heapifyUp(int index) {
 }
 
 // Heapify Down: Maintain min-heap property when removing (bubble down)
-// Lower priority number = higher urgency, so we use min-heap
+// Lower priority number = higher urgency
 void EmergencyPriorityQueue::heapifyDown(int index) {
     int minIndex = index;
     int left = getLeftChild(index);
@@ -184,7 +182,7 @@ void EmergencyPriorityQueue::viewPendingEmergencyCases() {
              << setw(25) << current.emergencyType
              << setw(15) << priorityLabel << endl;
         
-        // If only one element left, we're done
+        // If only one element left, breakkk
         if (tempSize == 1) {
             tempSize = 0;
             break;
@@ -243,7 +241,7 @@ void EmergencyPriorityQueue::loadFromFile(const string& filename) {
         string altPath = "emergency_cases.csv";
         file.open(altPath);
         if (!file.is_open()) {
-            // File doesn't exist yet, that's okay - start with empty queue
+            // File doesn't exist yet, start with empty queue
             return;
         }
     }
@@ -360,9 +358,7 @@ void EmergencyPriorityQueue::saveToFile(const string& filename) {
     file.close();
 }
 
-// ============================================================================
 // Emergency Department Officer Menu
-// ============================================================================
 
 void emergencyDepartmentOfficerMenu() {
     int choice;
